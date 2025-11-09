@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit product template form to add sales team fields -->
+        <record id="view_product_template_form_sales_team" model="ir.ui.view">
+            <field name="name">product.template.form.sales.team</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <!-- Add sales team fields in General Information tab -->
+                <xpath expr="//group[@name='group_general']" position="inside">
+                    <group string="فلتر فريق المبيعات" name="sales_team_filter">
+                        <field name="use_sales_team_filter"/>
+                        <field name="sales_team_ids" widget="many2many_tags" 
+                               invisible="not use_sales_team_filter"
+                               required="use_sales_team_filter"
+                               placeholder="اختر فرق المبيعات..."/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+

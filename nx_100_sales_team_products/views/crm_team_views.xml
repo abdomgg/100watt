@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit sales team form to add product category field -->
+        <record id="view_crm_team_form_product_categories" model="ir.ui.view">
+            <field name="name">crm.team.form.product.categories</field>
+            <field name="model">crm.team</field>
+            <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
+            <field name="arch" type="xml">
+                <!-- Add product categories field -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="فئات المنتجات" name="product_categories">
+                        <group>
+                            <field name="product_category_ids" widget="many2many_tags" 
+                                   placeholder="اختر فئات المنتجات..."/>
+                        </group>
+                        <group>
+                            <p class="text-muted">
+                                حدد فئات المنتجات التي يمكن لأعضاء هذا الفريق رؤيتها.
+                                إذا لم يتم تحديد أي فئة، سيتمكن الفريق من رؤية جميع المنتجات.
+                            </p>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+
