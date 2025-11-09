@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Delete old problematic view that was causing errors -->
+        <delete id="view_users_form_no_phone_required" model="ir.ui.view"/>
+        
         <!-- Inherit the partner form view to make fields required -->
         <record id="view_partner_form_required_fields" model="ir.ui.view">
             <field name="name">res.partner.form.required.fields</field>
