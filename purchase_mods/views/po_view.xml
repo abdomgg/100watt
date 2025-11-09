@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add cid field before partner_id with radio widget -->
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="cid" widget="radio"/>
+            </xpath>
+
+            <!-- Add Acid field after cid, hidden when local -->
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="Acid" invisible="cid == 'local'"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_product_template_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Add code field before the name label -->
+            <xpath expr="//label[@for='name']" position="before">
+                <label for="code" string="Product Code"/>
+                <field name="code" placeholder="e.g. PROD-001"/>
+            </xpath>
+        </field>
+    </record>
+
+
+
+</odoo>

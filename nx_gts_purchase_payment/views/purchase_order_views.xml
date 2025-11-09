@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_form_inherit_payment" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.payment</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[last()]" position="after">
+                <button name="action_payment" string="Payment" type="object" class="oe_highlight"
+                        invisible="state != 'purchase'"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="open_payments"
+                        class="oe_stat_button"
+                        type="object"
+                        icon="fa-bars"
+                        invisible="state != 'purchase'">
+                    <field name="payment_count" string="Payments" widget="statinfo"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
