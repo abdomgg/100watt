@@ -11,16 +11,6 @@
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="required">1</attribute>
                 </xpath>
-                
-                <!-- Make phone field required with indicator -->
-                <xpath expr="//field[@name='phone']" position="attributes">
-                    <attribute name="required">1</attribute>
-                </xpath>
-                
-                <!-- Make street field required with indicator -->
-                <xpath expr="//field[@name='street']" position="attributes">
-                    <attribute name="required">1</attribute>
-                </xpath>
             </field>
         </record>
     </data>
