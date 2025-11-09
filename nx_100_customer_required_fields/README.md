@@ -3,11 +3,17 @@
 ## Description
 This module makes the following fields required when creating a customer in Odoo:
 - **Name** (الاسم)
+- **Phone Number** (رقم الهاتف)
+
+**Note:** Phone number is NOT required when creating users from Settings.
+Address is optional for customers.
 
 And adds a required Tax ID field in sales orders that auto-populates from the customer.
 
 ## Features
-- Makes customer name mandatory field
+- Makes customer name and phone mandatory fields
+- Phone number is optional when creating users from Settings
+- Address is optional for customers
 - Adds Tax ID field to sales orders (required)
 - Auto-populates Tax ID from customer if available
 - Allows manual entry if customer doesn't have Tax ID
@@ -28,6 +34,9 @@ No configuration needed. The module works automatically after installation.
 ### Customer Creation:
 When creating or editing a customer, the system will require:
 - Name field to be filled
+- Phone field to be filled
+
+**Note:** When creating users from Settings > Users & Companies > Users, phone number is NOT required.
 
 ### Sales Order:
 When creating a sales order:

@@ -7,7 +7,7 @@ from odoo.exceptions import ValidationError
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    @api.constrains('name')
+    @api.constrains('name', 'phone')
     def _check_required_customer_fields(self):
         """Validate that required fields are filled for customers only"""
         for partner in self:
@@ -26,4 +26,6 @@ class ResPartner(models.Model):
             if partner.customer_rank > 0:
                 if not partner.name:
                     raise ValidationError('اسم العميل مطلوب.')
+                if not partner.phone:
+                    raise ValidationError('رقم الهاتف مطلوب.')
 
