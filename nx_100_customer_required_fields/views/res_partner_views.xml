@@ -11,6 +11,34 @@
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="required">1</attribute>
                 </xpath>
+                
+                <!-- Ensure phone field is NOT required -->
+                <xpath expr="//field[@name='phone']" position="attributes">
+                    <attribute name="required">0</attribute>
+                </xpath>
+                
+                <!-- Ensure street/address field is NOT required -->
+                <xpath expr="//field[@name='street']" position="attributes">
+                    <attribute name="required">0</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- Inherit the user form view to ensure phone is NOT required when creating users -->
+        <record id="view_users_form_no_phone_required" model="ir.ui.view">
+            <field name="name">res.users.form.no.phone.required</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <!-- Ensure phone field is NOT required in user form -->
+                <xpath expr="//field[@name='phone']" position="attributes">
+                    <attribute name="required">0</attribute>
+                </xpath>
+                
+                <!-- Ensure street/address field is NOT required in user form -->
+                <xpath expr="//field[@name='street']" position="attributes">
+                    <attribute name="required">0</attribute>
+                </xpath>
             </field>
         </record>
     </data>

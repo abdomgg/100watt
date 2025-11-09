@@ -9,10 +9,21 @@ class ResPartner(models.Model):
 
     @api.constrains('name')
     def _check_required_customer_fields(self):
-        """Validate that required fields are filled for customers"""
+        """Validate that required fields are filled for customers only"""
         for partner in self:
-            # Only apply validation for customers (not companies or contacts)
-            if partner.customer_rank > 0 or (not partner.parent_id and not partner.is_company):
+            # Skip validation for users (partners linked to user accounts)
+            if partner.user_ids:
+                continue
+            
+            # Skip validation if this is being created/edited in user context
+            context = self.env.context
+            if (context.get('active_model') == 'res.users' or
+                context.get('create_user')):
+                continue
+            
+            # Only apply validation for actual customers (with customer_rank > 0)
+            # This automatically excludes users since users don't have customer_rank set
+            if partner.customer_rank > 0:
                 if not partner.name:
                     raise ValidationError('اسم العميل مطلوب.')
 
