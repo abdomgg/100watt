@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Add Purchase Approvers section as a new page in the user form -->
+        <record id="view_users_form_purchase_approvers" model="ir.ui.view">
+            <field name="name">res.users.form.purchase.approvers</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='preferences']" position="after">
+                    <page string="Purchase Approvers" name="purchase_settings" groups="base.group_user">
+                        <group>
+                            <field name="purchase_approver_ids" context="{'default_user_id': id}">
+                                <list editable="bottom">
+                                    <field name="approver_user_id" required="1" string="User"/>
+                                    <field name="required" string="Required"/>
+                                </list>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+

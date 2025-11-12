@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_order_approver,purchase.order.approver,nx_100_purchase_approval.model_purchase_order_approver,base.group_user,1,1,1,1
+access_purchase_order_approver_line,purchase.order.approver.line,nx_100_purchase_approval.model_purchase_order_approver_line,base.group_user,1,1,1,1
+
