@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_order_form_approval" model="ir.ui.view">
+            <field name="name">sale.order.form.approval</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state'][@widget='statusbar']" position="attributes">
+                    <attribute name="statusbar_visible">draft,waiting_for_approval,sent,sale</attribute>
+                    <attribute name="statusbar_colors">{'waiting_for_approval': 'warning'}</attribute>
+                </xpath>
+                
+                <xpath expr="//button[@name='action_confirm'][1]" position="before">
+                    <button name="action_approve" 
+                            string="Approve" 
+                            type="object" 
+                            class="btn-success"
+                            invisible="state != 'waiting_for_approval' or not is_current_user_approver"/>
+                    <button name="action_reject" 
+                            string="Reject" 
+                            type="object" 
+                            class="btn-danger"
+                            invisible="state != 'waiting_for_approval' or not is_current_user_approver"/>
+                </xpath>
+                
+                <xpath expr="//button[@name='action_confirm'][@id='action_confirm']" position="attributes">
+                    <attribute name="invisible">state == 'waiting_for_approval' or state != 'sent'</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm'][not(@id)]" position="attributes">
+                    <attribute name="invisible">state == 'waiting_for_approval' or state != 'draft'</attribute>
+                </xpath>
+                
+                <xpath expr="//div[@name='button_box']" position="after">
+                    <div class="alert alert-warning" role="alert" invisible="state != 'waiting_for_approval'">
+                        <strong>Approval Required:</strong>
+                        <span>This quotation is waiting for approval. Please wait for all required approvers to approve before confirming.</span>
+                    </div>
+                </xpath>
+                
+                <xpath expr="//notebook" position="inside">
+                    <page string="Approval" name="approval" invisible="not approval_required">
+                        <group>
+                            <field name="approval_state" readonly="1"/>
+                            <field name="approved_by_ids" readonly="1" widget="many2many_tags"/>
+                        </group>
+                        <group string="Approvers">
+                            <field name="approver_ids" nolabel="1" readonly="1">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="approver_user_id"/>
+                                    <field name="required"/>
+                                    <field name="state" widget="badge" 
+                                           decoration-success="state == 'approved'"
+                                           decoration-danger="state == 'rejected'"
+                                           decoration-muted="state == 'pending'"/>
+                                </list>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
