@@ -6,9 +6,14 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='state'][@widget='statusbar']" position="attributes">
-                    <attribute name="statusbar_visible">draft,waiting_for_approval,sent,purchase</attribute>
-                    <attribute name="statusbar_colors">{'waiting_for_approval': 'warning'}</attribute>
+                <xpath expr="//field[@name='state'][@widget='statusbar']" position="replace">
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,sent,purchase"
+                           invisible="state == 'waiting_for_approval'"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,sent,waiting_for_approval,purchase"
+                           statusbar_colors="{'waiting_for_approval': 'warning'}"
+                           invisible="state != 'waiting_for_approval'"/>
                 </xpath>
                 
                 <xpath expr="//button[@name='button_confirm'][1]" position="before">

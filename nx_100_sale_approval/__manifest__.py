@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': 'Sale Order Approval - 100 Watt',
     'version': '1.0.0',

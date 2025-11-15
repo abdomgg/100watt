@@ -40,8 +40,8 @@ class SaleOrder(models.Model):
     state = fields.Selection(
         selection=[
             ('draft', "Quotation"),
-            ('waiting_for_approval', 'Pending Approval'),
             ('sent', "Quotation Sent"),
+            ('waiting_for_approval', 'Pending Approval'),
             ('sale', "Sales Order"),
             ('cancel', "Cancelled"),
         ],

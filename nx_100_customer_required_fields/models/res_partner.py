@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from odoo import api, models
 from odoo.exceptions import ValidationError
 
@@ -11,7 +9,6 @@ class ResPartner(models.Model):
     def _check_required_customer_fields(self):
         """Validate that required fields are filled for customers only"""
         for partner in self:
-            # Skip validation for users (partners linked to user accounts)
             if partner.user_ids:
                 continue
             
