@@ -88,7 +88,29 @@ class SaleOrder(models.Model):
 
     @api.model
     def create(self, vals):
-        order = super(SaleOrder, self).create(vals)
+        try:
+            order = super(SaleOrder, self).create(vals)
+        except Exception as e:
+            # Check if it's an access rights error
+            error_msg = str(e)
+            if 'create' in error_msg.lower() and 'access' in error_msg.lower():
+                _logger.error('Access rights error creating sale order: %s', error_msg)
+                # Check if user has sales group
+                if not self.env.user.has_group('sales_team.group_sale_salesman'):
+                    raise UserError(
+                        'You do not have permission to create sale orders. '
+                        'Please contact your administrator to grant you the Sales User access rights.'
+                    ) from e
+                else:
+                    # User has group but still getting error - might be record rule issue
+                    raise UserError(
+                        'You do not have permission to create sale orders for this customer. '
+                        'This might be due to record rules or company restrictions. '
+                        'Please contact your administrator.'
+                    ) from e
+            # Re-raise other errors as-is
+            raise
+        
         user_id = order.user_id or self.env.user
         has_approvers = bool(user_id.sale_approver_ids) if user_id else False
         
@@ -171,15 +193,11 @@ class SaleOrder(models.Model):
         for order in self:
             if order.approval_required:
                 if order.state == 'waiting_for_approval':
-                    required_approvers = order.approver_ids.filtered('required')
-                    approved_required = required_approvers.filtered(
-                        lambda a: a.approver_user_id in order.approved_by_ids
-                    )
-                    
-                    if len(approved_required) < len(required_approvers):
+                    # Check if at least one approver has approved
+                    if not order.approved_by_ids:
                         raise UserError(
                             'This quotation requires approval before it can be confirmed.\n'
-                            'Please wait for all required approvers to approve the order.'
+                            'Please wait for an approver to approve the order.'
                         )
                     if order.approval_state == 'approved':
                         order.state = 'draft'
@@ -247,19 +265,14 @@ class SaleOrder(models.Model):
             )
             activity.note = (activity.note or '') + '\n\n' + approval_status
         
-        required_approvers = self.approver_ids.filtered('required')
-        approved_required = required_approvers.filtered(
-            lambda a: a.approver_user_id in self.approved_by_ids
+        # Approve immediately when any approver approves (not requiring all)
+        self.approval_state = 'approved'
+        if self.state == 'waiting_for_approval':
+            self.state = 'draft'
+        self.message_post(
+            body='Sale order has been approved by %s.' % self.env.user.name,
+            subject='Order Approved'
         )
-        
-        if len(approved_required) >= len(required_approvers):
-            self.approval_state = 'approved'
-            if self.state == 'waiting_for_approval':
-                self.state = 'draft'
-            self.message_post(
-                body='Sale order has been approved by all required approvers.',
-                subject='Order Approved'
-            )
         
         return {
             'type': 'ir.actions.act_window',

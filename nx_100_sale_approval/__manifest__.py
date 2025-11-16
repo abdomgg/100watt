@@ -18,7 +18,6 @@
         Module developed for 100 Watt.
     """,
     'author': 'Ahmed Tarek',
-    'website': '',
     'depends': ['base', 'sale', 'mail'],
     'data': [
         'security/ir.model.access.csv',

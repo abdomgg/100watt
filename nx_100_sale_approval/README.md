@@ -62,8 +62,31 @@ This module adds an approval workflow for sale orders/quotations. When a user cr
 3. Approvers approve/reject
 4. Once all required approvers approve → Order can be confirmed
 
+## Troubleshooting
+
+### Access Rights Error: "doesn't have 'create' access to: Sales Order Line"
+
+If you encounter this error when creating sale orders, it means the user doesn't have the necessary permissions. To fix:
+
+1. **Check User Groups**: Ensure the user is in the "Sales / User" group (`sales_team.group_sale_salesman`)
+   - Go to **Settings > Users & Companies > Users**
+   - Open the user's form
+   - Go to **Access Rights** tab
+   - Ensure "Sales / User" is checked
+
+2. **Check Record Rules**: If the error occurs with some customers but not others, it might be a record rule issue:
+   - Go to **Settings > Technical > Security > Record Rules**
+   - Check rules for `sale.order` and `sale.order.line`
+   - Ensure the user can create records for the specific customer/company
+
+3. **Check Company Access**: Ensure the user has access to the company of the customer:
+   - Go to **Settings > Users & Companies > Users**
+   - Open the user's form
+   - Go to **Companies** tab
+   - Ensure the company is in the "Allowed Companies" list
+
 ## Module Information
-- **Author**: 100 Watt
+- **Author**: Ahmed Tarek
 - **Version**: 1.0.0
 - **License**: LGPL-3
 - **Dependencies**: base, sale, mail
