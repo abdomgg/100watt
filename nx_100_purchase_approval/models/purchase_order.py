@@ -267,12 +267,32 @@ class PurchaseOrder(models.Model):
         
         # Approve immediately when any approver approves (not requiring all)
         self.approval_state = 'approved'
+        
+        # Automatically confirm the order when approved
         if self.state == 'waiting_for_approval':
-            self.state = 'draft'
-        self.message_post(
-            body='Purchase order has been approved by %s.' % self.env.user.name,
-            subject='Order Approved'
-        )
+            # Set state to sent first to allow confirmation
+            self.with_context(skip_approval_check=True).write({
+                'state': 'sent',
+                'approval_state': 'approved'
+            })
+            # Automatically confirm the order (bypass approval check since already approved)
+            try:
+                self.with_context(skip_approval_check=True).button_confirm()
+                self.message_post(
+                    body='Purchase order has been approved by %s and automatically confirmed.' % self.env.user.name,
+                    subject='Order Approved and Confirmed'
+                )
+            except Exception as e:
+                _logger.error('Failed to auto-confirm order after approval: %s', str(e))
+                self.message_post(
+                    body='Purchase order has been approved by %s. Please confirm manually.' % self.env.user.name,
+                    subject='Order Approved'
+                )
+        else:
+            self.message_post(
+                body='Purchase order has been approved by %s.' % self.env.user.name,
+                subject='Order Approved'
+            )
         
         return {
             'type': 'ir.actions.act_window',
@@ -313,8 +333,16 @@ class PurchaseOrder(models.Model):
             )
             activity.note = (activity.note or '') + '\n\n' + rejection_status
         
+        # Reset to draft state and clear approvers so user can edit and resend
+        self.with_context(skip_approval_check=True).write({
+            'state': 'draft',
+            'approval_state': 'draft',
+            'approver_ids': [(5, 0, 0)],  # Clear all approver lines
+            'approved_by_ids': [(5, 0, 0)],  # Clear approved by list
+        })
+        
         self.message_post(
-            body='Purchase order has been rejected by %s.' % self.env.user.name,
+            body='Purchase order has been rejected by %s. The order has been reset to draft for editing.' % self.env.user.name,
             subject='Order Rejected'
         )
         

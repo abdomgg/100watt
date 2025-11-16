@@ -59,6 +59,16 @@
                         </group>
                     </page>
                 </xpath>
+                
+                <!-- Make unit price readonly when order is confirmed (state = 'sale') -->
+                <xpath expr="//field[@name='order_line']//field[@name='price_unit']" position="attributes">
+                    <attribute name="readonly">state == 'sale'</attribute>
+                </xpath>
+                
+                <!-- Make taxes readonly when order is confirmed (state = 'sale') -->
+                <xpath expr="//field[@name='order_line']//field[@name='tax_id']" position="attributes">
+                    <attribute name="readonly">state == 'sale'</attribute>
+                </xpath>
             </field>
         </record>
     </data>
