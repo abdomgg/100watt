@@ -6,6 +6,10 @@
     'license': 'LGPL-3',
     'depends': ['account','contacts','purchase','sale'],
     'data': [
+        'data/seq_code.xml',
         'views/po_view.xml',
+        'views/so_view.xml',
+        'views/product_search_view.xml',
+
     ],
 }

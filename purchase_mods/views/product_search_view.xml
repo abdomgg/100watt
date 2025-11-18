@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_template_search_view_inherit_code" model="ir.ui.view">
+        <field name="name">product.template.search.inherit.code</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <field name="name" position="replace">
+                <field name="name"
+                       string="Product"
+                       filter_domain="['|','|','|','|', ('code', 'ilike', self), ('default_code', 'ilike', self), ('product_variant_ids.default_code', 'ilike', self), ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="product_product_search_view_inherit_code" model="ir.ui.view">
+        <field name="name">product.product.search.inherit.code</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_search_form_view"/>
+        <field name="arch" type="xml">
+            <field name="name" position="replace">
+                <field name="name"
+                       string="Product"
+                       filter_domain="['|','|','|', ('product_tmpl_id.code', 'ilike', self), ('default_code', 'ilike', self), ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+            </field>
+        </field>
+    </record>
+</odoo>
+
