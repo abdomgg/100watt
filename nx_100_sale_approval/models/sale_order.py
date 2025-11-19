@@ -1,9 +1,6 @@
-import logging
 from datetime import datetime
-from odoo import api, fields, models
-from odoo.exceptions import UserError
-
-_logger = logging.getLogger(__name__)
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError, ValidationError
 
 
 class SaleOrderApprover(models.Model):
@@ -94,7 +91,6 @@ class SaleOrder(models.Model):
             # Check if it's an access rights error
             error_msg = str(e)
             if 'create' in error_msg.lower() and 'access' in error_msg.lower():
-                _logger.error('Access rights error creating sale order: %s', error_msg)
                 # Check if user has sales group
                 if not self.env.user.has_group('sales_team.group_sale_salesman'):
                     raise UserError(
@@ -119,10 +115,7 @@ class SaleOrder(models.Model):
             order.partner_id and
             user_id and
             not order.approver_ids):
-            try:
-                order._auto_request_approval()
-            except Exception as e:
-                _logger.warning('Auto-approval request failed on create: %s', str(e))
+            order._auto_request_approval()
         return order
 
     def write(self, vals):
@@ -141,17 +134,15 @@ class SaleOrder(models.Model):
                 order.partner_id and
                 user_id and
                 not order.approver_ids):
-                try:
-                    if not order.user_id:
-                        order.with_context(skip_approval_check=True).write({'user_id': user_id.id})
-                    order._auto_request_approval()
-                except Exception as e:
-                    _logger.error('Auto-approval request failed for order %s: %s', order.name, str(e), exc_info=True)
+                if not order.user_id:
+                    order.with_context(skip_approval_check=True).write({'user_id': user_id.id})
+                order._auto_request_approval()
         
         return result
 
     def _auto_request_approval(self):
         self.ensure_one()
+        self._check_stock_guard()
         
         if not self.user_id or not self.user_id.sale_approver_ids:
             return
@@ -172,15 +163,12 @@ class SaleOrder(models.Model):
         
         order_details = self._get_approval_activity_note()
         for approver_line in self.approver_ids:
-            try:
-                self.activity_schedule(
-                    'mail.mail_activity_data_todo',
-                    user_id=approver_line.approver_user_id.id,
-                    summary='Approve Sale Order %s' % self.name,
-                    note=order_details,
-                )
-            except Exception as e:
-                _logger.error('Failed to create activity for approver %s: %s', approver_line.approver_user_id.name, str(e))
+            self.activity_schedule(
+                'mail.mail_activity_data_todo',
+                user_id=approver_line.approver_user_id.id,
+                summary='Approve Sale Order %s' % self.name,
+                note=order_details,
+            )
         
         self.approval_state = 'pending'
         if self.state == 'draft':
@@ -190,38 +178,90 @@ class SaleOrder(models.Model):
         return '<p>Please review and approve Sale Order <strong>%s</strong>.</p>' % self.name
 
     def action_confirm(self):
+        self._check_stock_guard()
+
+        orders_to_confirm = self.env['sale.order']
+
         for order in self:
-            if order.approval_required:
-                if order.state == 'waiting_for_approval':
-                    # Check if at least one approver has approved
-                    if not order.approved_by_ids:
-                        raise UserError(
-                            'This quotation requires approval before it can be confirmed.\n'
-                            'Please wait for an approver to approve the order.'
-                        )
-                    if order.approval_state == 'approved':
-                        order.state = 'draft'
-                elif order.approval_state == 'draft' and not order.approver_ids:
+            needs_approval = bool(order.approver_ids) or order.approval_state in ('pending', 'approved') \
+                or order.state == 'waiting_for_approval' or order.approval_required
+
+            if not needs_approval:
+                orders_to_confirm |= order
+                continue
+
+            if order.state in ('draft', 'sent'):
+                order._auto_request_approval()
+                continue
+
+            if order.state == 'waiting_for_approval':
+                if not order.approved_by_ids:
                     raise UserError(
                         'This quotation requires approval before it can be confirmed.\n'
-                        'Approval will be automatically requested once you select a customer.'
+                        'Please wait for an approver to approve the order.'
                     )
-        
-        result = super(SaleOrder, self).action_confirm()
-        
-        if self.approval_required:
-            activities = self.env['mail.activity'].search([
+                order.with_context(skip_approval_check=True).write({'state': 'draft'})
+                orders_to_confirm |= order
+                continue
+
+            orders_to_confirm |= order
+
+        result = True
+        if orders_to_confirm:
+            result = super(SaleOrder, orders_to_confirm).action_confirm()
+            orders_to_confirm._close_approval_activities_post_confirm()
+
+        return result
+
+    def _close_approval_activities_post_confirm(self):
+        approvals_required = self.filtered('approval_required')
+        if not approvals_required:
+            return
+        Activity = self.env['mail.activity']
+        todo = self.env.ref('mail.mail_activity_data_todo')
+        for order in approvals_required:
+            activities = Activity.search([
                 ('res_model', '=', 'sale.order'),
-                ('res_id', '=', self.id),
-                ('activity_type_id', '=', self.env.ref('mail.mail_activity_data_todo').id),
+                ('res_id', '=', order.id),
+                ('activity_type_id', '=', todo.id),
             ])
             for activity in activities:
                 confirmation_status = '✓ ORDER CONFIRMED on %s' % (
                     datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 )
                 activity.note = (activity.note or '') + '\n\n' + confirmation_status
-        
-        return result
+
+    def _check_stock_guard(self):
+        for order in self:
+            warehouse_name = order.warehouse_id.display_name or _('unspecified warehouse')
+            lines = order.order_line.filtered(
+                lambda l: l.product_id and l.product_id.type in ('product', 'consu') and not l.display_type and not l.is_downpayment
+            )
+            for line in lines:
+                line._compute_qty_on_hand()
+                qty_available = line.qty_on_hand
+                if qty_available <= 0:
+                    raise ValidationError(
+                        _(
+                            "Cannot confirm %(order)s because %(product)s is out of stock in %(warehouse)s.",
+                            order=order.name or _('this quotation'),
+                            product=line.product_id.display_name,
+                            warehouse=warehouse_name,
+                        )
+                    )
+                if line.product_uom_qty > qty_available:
+                    raise ValidationError(
+                        _(
+                            "Cannot confirm %(order)s because %(product)s has only %(available)s %(uom)s "
+                            "available in %(warehouse)s, but %(requested)s %(uom)s were requested.",
+                            order=order.name or _('this quotation'),
+                            product=line.product_id.display_name,
+                            available=qty_available,
+                            requested=line.product_uom_qty,
+                            uom=line.product_uom.name,
+                            warehouse=warehouse_name,
+                        )
+                    )
 
     def action_approve(self):
         self.ensure_one()
@@ -282,8 +322,7 @@ class SaleOrder(models.Model):
                     body='Sale order has been approved by %s and automatically confirmed.' % self.env.user.name,
                     subject='Order Approved and Confirmed'
                 )
-            except Exception as e:
-                _logger.error('Failed to auto-confirm order after approval: %s', str(e))
+            except Exception:
                 self.message_post(
                     body='Sale order has been approved by %s. Please confirm manually.' % self.env.user.name,
                     subject='Order Approved'

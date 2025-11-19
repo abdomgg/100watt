@@ -69,6 +69,13 @@
                 <xpath expr="//field[@name='order_line']//field[@name='tax_id']" position="attributes">
                     <attribute name="readonly">state == 'sale'</attribute>
                 </xpath>
+
+                <xpath expr="//page[@name='order_lines']//form//field[@name='product_uom_qty']" position="after">
+                    <field name="qty_on_hand" readonly="1"/>
+                </xpath>
+                <xpath expr="//page[@name='order_lines']//list//field[@name='product_uom_qty']" position="after">
+                    <field name="qty_on_hand" readonly="1" optional="show"/>
+                </xpath>
             </field>
         </record>
     </data>
