@@ -6,8 +6,7 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//header/button[last()]" position="after">
-                <button name="action_payment" string="Payment" type="object" class="oe_highlight"
-                        invisible="state != 'purchase'"/>
+                <button name="action_payment" string="Payment" type="object" class="oe_highlight"/>
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="open_payments"

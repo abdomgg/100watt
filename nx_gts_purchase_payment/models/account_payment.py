@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class AccountPayment(models.Model):
@@ -21,15 +22,15 @@ class AccountPayment(models.Model):
             ])
             if moves:
                 payment.write({'invoice_ids': [(4, inv.id) for inv in moves]})
+            payment._auto_confirm_purchase_payment()
 
         return payment
 
     def action_post(self):
         res = super().action_post()
-        for payment in self:
-            if not payment.purchase_id:
-                continue
+        purchase_payments = self.filtered('purchase_id')
 
+        for payment in purchase_payments:
             purchase_group = self.env.ref("purchase.group_purchase_user")
             users = purchase_group.users
             partner_ids = users.mapped("partner_id").ids
@@ -89,4 +90,57 @@ class AccountPayment(models.Model):
                         subtype_xmlid="mail.mt_comment",
                     )
 
+        purchase_payments._auto_confirm_purchase_payment()
         return res
+
+    def action_open_manual_reconciliation_widget(self):
+        """Fallback manual reconciliation for community builds."""
+        self.ensure_one()
+
+        move_line = False
+        for line in self.move_id.line_ids:
+            if line.account_id.reconcile:
+                move_line = line.id
+                break
+
+        if not self.partner_id:
+            raise UserError(_("Payments without a customer can't be matched"))
+
+        action_context = {
+            'company_ids': [self.company_id.id],
+            'partner_ids': [self.partner_id.commercial_partner_id.id],
+        }
+
+        if self.partner_type == 'customer':
+            action_context['mode'] = 'customers'
+        elif self.partner_type == 'supplier':
+            action_context['mode'] = 'suppliers'
+
+        if move_line:
+            action_context['move_line_id'] = move_line
+
+        action_values = self.env['ir.actions.act_window']._for_xml_id('account.action_account_moves_all_grouped_matching')
+        action_values['domain'] = [
+            ('partner_id', '=', self.partner_id.commercial_partner_id.id),
+            ('reconciled', '=', False),
+            ('parent_state', '!=', 'cancel'),
+        ]
+        action_values['context'] = {
+            'search_default_partner_id': self.partner_id.commercial_partner_id.id,
+            'search_default_posted': 1,
+            'default_partner_id': self.partner_id.commercial_partner_id.id,
+        }
+        action_values['target'] = 'current'
+        return action_values
+
+    def _auto_confirm_purchase_payment(self):
+        """Automatically confirm & validate purchase payments to reach Paid state."""
+        for payment in self.filtered('purchase_id'):
+            if payment.state == 'draft':
+                payment.action_post()
+            if payment.state == 'in_process':
+                action_validate = getattr(payment, "action_validate", None)
+                if action_validate:
+                    action_validate()
+                else:
+                    payment.write({'state': 'paid'})
