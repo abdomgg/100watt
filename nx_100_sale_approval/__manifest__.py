@@ -1,6 +1,6 @@
 {
     'name': 'Sale Order Approval - 100 Watt',
-    'version': '1.0.0',
+    'version': '1.0.2',
     'category': 'Sales',
     'summary': 'Require approval before confirming sale orders/quotations',
     'description': """
@@ -24,6 +24,7 @@
         'views/res_users_views.xml',
         'views/sale_order_views.xml',
     ],
+    'post_init_hook': 'post_init_hook',
     'installable': True,
     'application': False,
     'auto_install': False,

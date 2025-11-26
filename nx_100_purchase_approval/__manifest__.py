@@ -1,6 +1,6 @@
 {
     'name': 'Purchase Order Approval - 100 Watt',
-    'version': '1.0.0',
+    'version': '1.0.2',
     'category': 'Purchases',
     'summary': 'Require approval before confirming purchase orders',
     'description': """
@@ -25,6 +25,7 @@
         'views/res_users_views.xml',
         'views/purchase_order_views.xml',
     ],
+    'post_init_hook': 'post_init_hook',
     'installable': True,
     'application': False,
     'auto_install': False,

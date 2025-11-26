@@ -1,0 +1,238 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * nx_100_purchase_approval
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-27 12:00:00\n"
+"PO-Revision-Date: 2025-01-28 12:00:00\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: nx_100_purchase_approval
+#: model:ir.module.module,shortdesc:nx_100_purchase_approval
+msgid "Purchase Order Approval - 100 Watt"
+msgstr "الموافقة على طلب الشراء - 100 وات"
+
+#. module: nx_100_purchase_approval
+#: model:ir.module.module,summary:nx_100_purchase_approval
+msgid "Require approval before confirming purchase orders"
+msgstr "يتطلب الموافقة قبل تأكيد طلبات الشراء"
+
+#. module: nx_100_purchase_approval
+#: model:ir.model.fields,field_description:nx_100_purchase_approval.field_purchase_order__approval_required
+msgid "Approval Required"
+msgstr "الموافقة مطلوبة"
+
+#. module: nx_100_purchase_approval
+#: selection:purchase.order,state:0
+msgid "Pending Approval"
+msgstr "في انتظار الموافقة"
+
+#. module: nx_100_purchase_approval
+#: model:ir.model.fields,field_description:nx_100_purchase_approval.field_purchase_order__approval_state
+msgid "Approval Status"
+msgstr "حالة الموافقة"
+
+#. module: nx_100_purchase_approval
+#: selection:purchase.order,approval_state:0
+msgid "Pending Approval"
+msgstr "في انتظار الموافقة"
+
+#. module: nx_100_purchase_approval
+#: selection:purchase.order,approval_state:0
+msgid "Approved"
+msgstr "موافق عليه"
+
+#. module: nx_100_purchase_approval
+#: selection:purchase.order,approval_state:0
+msgid "Rejected"
+msgstr "مرفوض"
+
+#. module: nx_100_purchase_approval
+#: model:ir.model.fields,field_description:nx_100_purchase_approval.field_purchase_order__approver_ids
+msgid "Approvers"
+msgstr "الموافقون"
+
+#. module: nx_100_purchase_approval
+#: model:ir.model.fields,field_description:nx_100_purchase_approval.field_purchase_order__approved_by_ids
+msgid "Approved By"
+msgstr "تمت الموافقة من قبل"
+
+#. module: nx_100_purchase_approval
+#: model:ir.model.fields,field_description:nx_100_purchase_approval.field_purchase_order__is_current_user_approver
+msgid "Is Current User Approver"
+msgstr "هل المستخدم الحالي موافق"
+
+#. module: nx_100_purchase_approval
+#: model:ir.model.fields,field_description:nx_100_purchase_approval.field_res_users__purchase_approver_ids
+msgid "Purchase Approvers"
+msgstr "موافقو الشراء"
+
+#. module: nx_100_purchase_approval
+#: model:ir.model.fields,help:nx_100_purchase_approval.field_res_users__purchase_approver_ids
+msgid "Users who can approve purchase orders created by this user"
+msgstr "المستخدمون الذين يمكنهم الموافقة على طلبات الشراء التي ينشئها هذا المستخدم"
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "You do not have permission to create purchase orders. Please contact your administrator to grant you the Purchase User access rights."
+msgstr "ليس لديك إذن لإنشاء طلبات الشراء. يرجى الاتصال بالمسؤول لمنحك حقوق الوصول لمستخدم الشراء."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "You do not have permission to create purchase orders for this vendor. This might be due to record rules or company restrictions. Please contact your administrator."
+msgstr "ليس لديك إذن لإنشاء طلبات الشراء لهذا المورد. قد يكون هذا بسبب قواعد السجلات أو قيود الشركة. يرجى الاتصال بالمسؤول."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "Approve Purchase Order %s"
+msgstr "الموافقة على طلب الشراء %s"
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "Please review and approve Purchase Order <strong>%s</strong>."
+msgstr "يرجى مراجعة والموافقة على طلب الشراء <strong>%s</strong>."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "This purchase order requires approval before it can be confirmed.\nPlease wait for an approver to approve the order."
+msgstr "يتطلب طلب الشراء هذا الموافقة قبل تأكيده.\nيرجى الانتظار حتى يوافق أحد الموافقين على الطلب."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "This purchase order requires approval before it can be confirmed.\nApproval will be automatically requested once you select a vendor."
+msgstr "يتطلب طلب الشراء هذا الموافقة قبل تأكيده.\nسيتم طلب الموافقة تلقائياً بمجرد اختيار مورد."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "✓ ORDER CONFIRMED on %s"
+msgstr "✓ تم تأكيد الطلب في %s"
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "This order is not pending approval."
+msgstr "هذا الطلب ليس في انتظار الموافقة."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "You are not authorized to approve this order. Only designated approvers can approve."
+msgstr "غير مصرح لك بالموافقة على هذا الطلب. فقط الموافقون المعينون يمكنهم الموافقة."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "Already Approved"
+msgstr "تمت الموافقة بالفعل"
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "You have already approved this purchase order."
+msgstr "لقد وافقت بالفعل على طلب الشراء هذا."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "✓ APPROVED by %s on %s"
+msgstr "✓ تمت الموافقة من قبل %s في %s"
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "Purchase order has been approved by %s and automatically confirmed."
+msgstr "تمت الموافقة على طلب الشراء من قبل %s وتم تأكيده تلقائياً."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "Order Approved and Confirmed"
+msgstr "تمت الموافقة على الطلب وتأكيده"
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "Purchase order has been approved by %s. Please confirm manually."
+msgstr "تمت الموافقة على طلب الشراء من قبل %s. يرجى التأكيد يدوياً."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "Order Approved"
+msgstr "تمت الموافقة على الطلب"
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "Purchase order has been approved by %s."
+msgstr "تمت الموافقة على طلب الشراء من قبل %s."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "You are not authorized to reject this order. Only designated approvers can reject."
+msgstr "غير مصرح لك برفض هذا الطلب. فقط الموافقون المعينون يمكنهم الرفض."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "✗ REJECTED by %s on %s"
+msgstr "✗ تم الرفض من قبل %s في %s"
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "Purchase order has been rejected by %s. The order has been reset to draft for editing."
+msgstr "تم رفض طلب الشراء من قبل %s. تم إعادة تعيين الطلب إلى مسودة للتحرير."
+
+#. module: nx_100_purchase_approval
+#: code:addons/nx_100_purchase_approval/models/purchase_order.py:0
+#, python-format
+msgid "Order Rejected"
+msgstr "تم رفض الطلب"
+
+#. module: nx_100_purchase_approval
+#: model:ir.ui.view,arch_db:nx_100_purchase_approval.view_purchase_order_form_approval
+msgid "Approve"
+msgstr "موافقة"
+
+#. module: nx_100_purchase_approval
+#: model:ir.ui.view,arch_db:nx_100_purchase_approval.view_purchase_order_form_approval
+msgid "Reject"
+msgstr "رفض"
+
+#. module: nx_100_purchase_approval
+#: model:ir.ui.view,arch_db:nx_100_purchase_approval.view_purchase_order_form_approval
+msgid "Approval Required:"
+msgstr "الموافقة مطلوبة:"
+
+#. module: nx_100_purchase_approval
+#: model:ir.ui.view,arch_db:nx_100_purchase_approval.view_purchase_order_form_approval
+msgid "This purchase order is waiting for approval. Please wait for an approver to approve before confirming."
+msgstr "طلب الشراء هذا في انتظار الموافقة. يرجى الانتظار حتى يوافق أحد الموافقين قبل التأكيد."
+
+#. module: nx_100_purchase_approval
+#: model:ir.ui.view,arch_db:nx_100_purchase_approval.view_purchase_order_form_approval
+msgid "Approval"
+msgstr "الموافقة"
+
+#. module: nx_100_purchase_approval
+#: model:ir.ui.view,arch_db:nx_100_purchase_approval.view_users_form_purchase_approvers
+msgid "Purchase Approvers"
+msgstr "موافقو الشراء"

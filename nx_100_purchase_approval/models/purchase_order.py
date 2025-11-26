@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -98,15 +98,15 @@ class PurchaseOrder(models.Model):
                 # Check if user has purchase group
                 if not self.env.user.has_group('purchase.group_purchase_user'):
                     raise UserError(
-                        'You do not have permission to create purchase orders. '
-                        'Please contact your administrator to grant you the Purchase User access rights.'
+                        _('You do not have permission to create purchase orders. '
+                          'Please contact your administrator to grant you the Purchase User access rights.')
                     ) from e
                 else:
                     # User has group but still getting error - might be record rule issue
                     raise UserError(
-                        'You do not have permission to create purchase orders for this vendor. '
-                        'This might be due to record rules or company restrictions. '
-                        'Please contact your administrator.'
+                        _('You do not have permission to create purchase orders for this vendor. '
+                          'This might be due to record rules or company restrictions. '
+                          'Please contact your administrator.')
                     ) from e
             # Re-raise other errors as-is
             raise
@@ -176,7 +176,7 @@ class PurchaseOrder(models.Model):
                 self.activity_schedule(
                     'mail.mail_activity_data_todo',
                     user_id=approver_line.approver_user_id.id,
-                    summary='Approve Purchase Order %s' % self.name,
+                    summary=_('Approve Purchase Order %s') % self.name,
                     note=order_details,
                 )
             except Exception as e:
@@ -187,7 +187,7 @@ class PurchaseOrder(models.Model):
             self.with_context(skip_approval_check=True).write({'state': 'waiting_for_approval'})
 
     def _get_approval_activity_note(self):
-        return '<p>Please review and approve Purchase Order <strong>%s</strong>.</p>' % self.name
+        return '<p>%s</p>' % (_('Please review and approve Purchase Order <strong>%s</strong>.') % self.name)
 
     def button_confirm(self):
         for order in self:
@@ -196,15 +196,15 @@ class PurchaseOrder(models.Model):
                     # Check if at least one approver has approved
                     if not order.approved_by_ids:
                         raise UserError(
-                            'This purchase order requires approval before it can be confirmed.\n'
-                            'Please wait for an approver to approve the order.'
+                            _('This purchase order requires approval before it can be confirmed.\n'
+                              'Please wait for an approver to approve the order.')
                         )
                     if order.approval_state == 'approved':
                         order.state = 'draft'
                 elif order.approval_state == 'draft' and not order.approver_ids:
                     raise UserError(
-                        'This purchase order requires approval before it can be confirmed.\n'
-                        'Approval will be automatically requested once you select a vendor.'
+                        _('This purchase order requires approval before it can be confirmed.\n'
+                          'Approval will be automatically requested once you select a vendor.')
                     )
         
         result = super(PurchaseOrder, self).button_confirm()
@@ -216,7 +216,7 @@ class PurchaseOrder(models.Model):
                 ('activity_type_id', '=', self.env.ref('mail.mail_activity_data_todo').id),
             ])
             for activity in activities:
-                confirmation_status = '✓ ORDER CONFIRMED on %s' % (
+                confirmation_status = _('✓ ORDER CONFIRMED on %s') % (
                     datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 )
                 activity.note = (activity.note or '') + '\n\n' + confirmation_status
@@ -227,18 +227,18 @@ class PurchaseOrder(models.Model):
         self.ensure_one()
         
         if self.state != 'waiting_for_approval':
-            raise UserError('This order is not pending approval.')
+            raise UserError(_('This order is not pending approval.'))
         
         if self.env.user not in self.approver_ids.mapped('approver_user_id'):
-            raise UserError('You are not authorized to approve this order. Only designated approvers can approve.')
+            raise UserError(_('You are not authorized to approve this order. Only designated approvers can approve.'))
         
         if self.env.user in self.approved_by_ids:
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
-                    'title': 'Already Approved',
-                    'message': 'You have already approved this purchase order.',
+                    'title': _('Already Approved'),
+                    'message': _('You have already approved this purchase order.'),
                     'type': 'info',
                     'sticky': False,
                 }
@@ -259,7 +259,7 @@ class PurchaseOrder(models.Model):
             ('activity_type_id', '=', self.env.ref('mail.mail_activity_data_todo').id),
         ])
         for activity in activities:
-            approval_status = '✓ APPROVED by %s on %s' % (
+            approval_status = _('✓ APPROVED by %s on %s') % (
                 self.env.user.name,
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             )
@@ -279,19 +279,19 @@ class PurchaseOrder(models.Model):
             try:
                 self.with_context(skip_approval_check=True).button_confirm()
                 self.message_post(
-                    body='Purchase order has been approved by %s and automatically confirmed.' % self.env.user.name,
-                    subject='Order Approved and Confirmed'
+                    body=_('Purchase order has been approved by %s and automatically confirmed.') % self.env.user.name,
+                    subject=_('Order Approved and Confirmed')
                 )
             except Exception as e:
                 _logger.error('Failed to auto-confirm order after approval: %s', str(e))
                 self.message_post(
-                    body='Purchase order has been approved by %s. Please confirm manually.' % self.env.user.name,
-                    subject='Order Approved'
+                    body=_('Purchase order has been approved by %s. Please confirm manually.') % self.env.user.name,
+                    subject=_('Order Approved')
                 )
         else:
             self.message_post(
-                body='Purchase order has been approved by %s.' % self.env.user.name,
-                subject='Order Approved'
+                body=_('Purchase order has been approved by %s.') % self.env.user.name,
+                subject=_('Order Approved')
             )
         
         return {
@@ -307,10 +307,10 @@ class PurchaseOrder(models.Model):
         self.ensure_one()
         
         if self.state != 'waiting_for_approval':
-            raise UserError('This order is not pending approval.')
+            raise UserError(_('This order is not pending approval.'))
         
         if self.env.user not in self.approver_ids.mapped('approver_user_id'):
-            raise UserError('You are not authorized to reject this order. Only designated approvers can reject.')
+            raise UserError(_('You are not authorized to reject this order. Only designated approvers can reject.'))
         
         self.approval_state = 'rejected'
         
@@ -327,7 +327,7 @@ class PurchaseOrder(models.Model):
             ('activity_type_id', '=', self.env.ref('mail.mail_activity_data_todo').id),
         ])
         for activity in activities:
-            rejection_status = '✗ REJECTED by %s on %s' % (
+            rejection_status = _('✗ REJECTED by %s on %s') % (
                 self.env.user.name,
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             )
@@ -342,8 +342,8 @@ class PurchaseOrder(models.Model):
         })
         
         self.message_post(
-            body='Purchase order has been rejected by %s. The order has been reset to draft for editing.' % self.env.user.name,
-            subject='Order Rejected'
+            body=_('Purchase order has been rejected by %s. The order has been reset to draft for editing.') % self.env.user.name,
+            subject=_('Order Rejected')
         )
         
         return {

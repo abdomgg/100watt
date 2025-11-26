@@ -7,7 +7,7 @@
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@name='preferences']" position="after">
+                <xpath expr="//notebook" position="inside">
                     <page string="Sales Approvers" name="sales_settings" groups="base.group_user">
                         <group>
                             <field name="sale_approver_ids" context="{'default_user_id': id}">
