@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--    Report Template for Partner Ledger.-->
+    <!-- Report Template for Partner Ledger. -->
     <template id="partner_ledger">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <t t-set="data_report_margin_top" t-value="12"/>
                 <t t-set="data_report_header_spacing" t-value="9"/>
                 <t t-set="data_report_dpi" t-value="110"/>
+
                 <div class="page">
                     <h3>
                         <center>
-                            <b>
-                                <span t-esc="report_name"/>
-                            </b>
+                            <b><span t-esc="report_name"/></b>
                         </center>
                     </h3>
                     <br/>
                     <br/>
+
+                    <!-- Filters header -->
                     <div class="filters">
                         <table class="table table-sm table-reports">
-                            <thead class="filter_table"
-                                   style="background:#808080;">
+                            <thead class="filter_table" style="background:#808080;">
                                 <tr>
                                     <th>Date Range</th>
                                     <th>Partner</th>
@@ -42,8 +42,7 @@
                                         <t t-foreach="filters['partner']"
                                            t-as="selected_partner"
                                            t-key="partner_index">
-                                            <t t-out="selected_partner['display_name']"/>
-                                            ,
+                                            <t t-out="selected_partner['display_name']"/>,
                                         </t>
                                     </th>
                                     <th>
@@ -64,52 +63,59 @@
                             </tbody>
                         </table>
                     </div>
+
                     <br/>
                     <br/>
                     <br/>
+
+                    <!-- Partners loop -->
                     <t t-if="partners">
                         <t t-foreach="partners"
                            t-as="partner"
                            t-key="partner_index">
+
                             <table class="table table-sm table-reports">
                                 <thead style="background:#808080;">
                                     <tr>
+                                        <!-- empty space used in original template -->
                                         <th style="width:10%" colspan="6"/>
-                                        <th style="width:10%">JRNL</th>
-                                        <th style="width:10%">Account</th>
+                                        <th style="width:8%">JRNL</th>
+                                        <th style="width:8%">Account</th>
+                                        <!-- NEW columns -->
+                                        <th style="width:14%">Products</th>
+                                        <th style="width:8%">Price</th>
+                                        <th style="width:8%">Quantity</th>
+                                        <!-- existing -->
                                         <th style="width:10%">Ref</th>
                                         <th style="width:10%">Due Date</th>
-                                        <th style="width:10%">Matching Number
-                                        </th>
+                                        <th style="width:10%">Matching Number</th>
                                         <th style="width:10%">Debit</th>
                                         <th style="width:10%">Credit</th>
-                                        <th style="width:10%">Amount Currency
-                                        </th>
+                                        <th style="width:10%">Amount Currency</th>
                                         <th style="width:10%">Balance</th>
                                     </tr>
                                 </thead>
+
                                 <tbody style="font-size:11px;font-weight:100;">
-                                    <tr class="border-bottom"
-                                        style="background:#D3D3D3;">
-                                        <th colspan="9"
+
+                                    <!-- Partner total header row -->
+                                    <tr class="border-bottom" style="background:#D3D3D3;">
+                                        <!-- span across partner name + new product columns etc. -->
+                                        <th colspan="12"
                                             style="border:0px solid transparent;border-left: thin solid #dee2e6;">
                                             <div class="ms-3">
                                                 <span class="fw-bolder">
                                                     <t t-if="partner != 'false'">
-                                                        <strong>
-                                                            <b>
-                                                                <t t-esc="partner"/>
-                                                            </b>
-                                                        </strong>
+                                                        <strong><b><t t-esc="partner"/></b></strong>
                                                     </t>
                                                     <t t-else="">
-                                                        <span>Unknown
-                                                            Partner
-                                                        </span>
+                                                        <span>Unknown Partner</span>
                                                     </t>
                                                 </span>
                                             </div>
                                         </th>
+
+                                        <!-- totals -->
                                         <th style="width:10% border:0px solid transparent;"/>
                                         <th style="width:10% border:0px solid transparent;"/>
                                         <th style="width:10% border:0px solid transparent;">
@@ -142,87 +148,129 @@
                                             </strong>
                                         </th>
                                     </tr>
-                                    <!-- Iterate over partner's initial balance -->
+
+                                    <!-- Initial balance row (kept same structure, just matches new column count) -->
                                     <t t-set="j" t-value="0"/>
                                     <t t-foreach="partners"
                                        t-as="partner_initial"
                                        t-key="partner_initial_index">
                                         <t t-set="j" t-value="j + 1"/>
                                         <t t-if="j == 1 and total[partner]['initial_balance'] != 0">
-                                            <th colspan="6">
-                                                <span style="gap: 12px;display: flex;">
-
-                                                </span>
-                                            </th>
-                                            <th>
-                                            </th>
-                                            <th>
-                                            </th>
-                                            <th>
-                                                <span>
-                                                    <t t-esc="total[partner]['move_name']"/>
-                                                </span>
-                                            </th>
-                                            <th>
-                                            </th>
-                                            <th>
-                                            </th>
-                                            <th>
-                                                <span>
-                                                    <t t-esc="total[partner]['initial_debit']"/>
-                                                </span>
-                                            </th>
-                                            <th>
-                                                <span>
-                                                    <t t-esc="total[partner]['initial_credit']"/>
-                                                </span>
-                                            </th>
-                                            <th/>
-                                            <th>
-                                                <span>
-                                                    <t t-esc="total[partner]['initial_balance']"/>
-                                                </span>
-                                            </th>
+                                            <tr>
+                                                <th colspan="6">
+                                                    <span style="gap: 12px;display: flex;"/>
+                                                </th>
+                                                <!-- JRNL + Account + Products + Price + Quantity -->
+                                                <th/>
+                                                <th/>
+                                                <th/>
+                                                <th/>
+                                                <th/>
+                                                <!-- Ref -->
+                                                <th>
+                                                    <span>
+                                                        <t t-esc="total[partner]['move_name']"/>
+                                                    </span>
+                                                </th>
+                                                <!-- Due / Matching -->
+                                                <th/>
+                                                <th/>
+                                                <!-- Debit / Credit / Amount currency / Balance -->
+                                                <th>
+                                                    <span>
+                                                        <t t-esc="total[partner]['initial_debit']"/>
+                                                    </span>
+                                                </th>
+                                                <th>
+                                                    <span>
+                                                        <t t-esc="total[partner]['initial_credit']"/>
+                                                    </span>
+                                                </th>
+                                                <th/>
+                                                <th>
+                                                    <span>
+                                                        <t t-esc="total[partner]['initial_balance']"/>
+                                                    </span>
+                                                </th>
+                                            </tr>
                                         </t>
                                     </t>
-                                    <!-- Iterate over partner's value list -->
+
+                                    <!-- Lines for this partner -->
                                     <t t-foreach="data[partner]"
                                        t-as="valuelist"
                                        t-key="valuelist_index">
                                         <tr class="border-bottom">
+                                            <!-- date -->
                                             <th colspan="6" style="width:10%">
                                                 <span>
                                                     <t t-esc="valuelist[0]['date']"/>
                                                 </span>
                                             </th>
-                                            <th style="width:10%">
+
+                                            <!-- JRNL -->
+                                            <th style="width:8%">
                                                 <span>
                                                     <t t-esc="valuelist[0]['jrnl']"/>
                                                 </span>
                                             </th>
-                                            <th style="width:10%">
+
+                                            <!-- Account -->
+                                            <th style="width:8%">
                                                 <span>
                                                     <t t-esc="valuelist[0]['code']"/>
                                                 </span>
                                             </th>
+
+                                            <!-- NEW: Products -->
+                                            <th style="width:14%; white-space: pre-line;">
+                                                <span>
+                                                    <t t-if="valuelist[0].get('products')"
+                                                       t-esc="valuelist[0]['products']"/>
+                                                </span>
+                                            </th>
+
+                                            <!-- NEW: Price -->
+                                            <th style="width:8%; white-space: pre-line;">
+                                                <span>
+                                                    <t t-if="valuelist[0].get('product_prices')"
+                                                       t-esc="valuelist[0]['product_prices']"/>
+                                                </span>
+                                            </th>
+
+                                            <!-- NEW: Quantity -->
+                                            <th style="width:8%; white-space: pre-line;">
+                                                <span>
+                                                    <t t-if="valuelist[0].get('product_quantities')"
+                                                       t-esc="valuelist[0]['product_quantities']"/>
+                                                </span>
+                                            </th>
+
+                                            <!-- Ref -->
                                             <th style="width:10%">
                                                 <span>
                                                     <t t-if="valuelist[0]['move_name']"
                                                        t-esc="valuelist[0]['move_name']"/>
                                                 </span>
                                             </th>
+
+                                            <!-- Due Date -->
                                             <th style="width:10%">
                                                 <span>
                                                     <t t-if="valuelist[0]['date_maturity']"
                                                        t-esc="valuelist[0]['date_maturity']"/>
                                                 </span>
                                             </th>
+
+                                            <!-- Matching Number -->
                                             <th style="width:10%">
                                                 <span>
                                                     <t t-if="valuelist[0]['matching_number']"
                                                        t-esc="valuelist[0]['matching_number']"/>
                                                 </span>
                                             </th>
+
+                                            <!-- Debit -->
                                             <th style="width:10%">
                                                 <span>
                                                     <t t-if="valuelist[0]['debit']"
@@ -231,6 +279,8 @@
                                                        t-esc="valuelist[0]['debit_display']"/>
                                                 </span>
                                             </th>
+
+                                            <!-- Credit -->
                                             <th style="width:10%">
                                                 <span>
                                                     <t t-if="valuelist[0]['credit']"
@@ -239,14 +289,18 @@
                                                        t-esc="valuelist[0]['credit_display']"/>
                                                 </span>
                                             </th>
+
+                                            <!-- Amount Currency -->
                                             <th style="width:10%">
-                                                <span>
-                                                    <t t-if="valuelist[0]['amount_currency']"
-                                                       t-esc="total[partner]['currency_id']"/>
-                                                    <t t-if="valuelist[0]['amount_currency']"
-                                                       t-esc="valuelist[0]['amount_currency_display']"/>
-                                                </span>
+            <span>
+                <t t-if="valuelist[0]['amount_currency']"
+                   t-esc="total[partner]['currency_id']"/>
+                <t t-if="valuelist[0]['amount_currency']"
+                   t-esc="valuelist[0]['amount_currency_display']"/>
+            </span>
                                             </th>
+
+                                            <!-- Balance (kept empty, same as original) -->
                                             <th style="width:10%"/>
                                         </tr>
                                     </t>
@@ -254,6 +308,8 @@
                             </table>
                         </t>
                     </t>
+
+                    <!-- Grand totals footer -->
                     <table class="table table-sm table-reports">
                         <tbody>
                             <tr>
@@ -270,7 +326,7 @@
                                 <th style="width:10%">
                                     <t t-out="grand_total['currency']"/>
                                     <t t-if="grand_total['total_debit'] and grand_total['total_credit']">
-                                    <t t-out="grand_total['total_debit'] - grand_total['total_credit']"/>
+                                        <t t-out="grand_total['total_debit'] - grand_total['total_credit']"/>
                                     </t>
                                 </th>
                             </tr>
