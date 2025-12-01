@@ -9,33 +9,45 @@
                 <xpath expr="//notebook" position="inside">
                     <page string="Customer Statement" name="customer_statement">
                         <group>
-                            <button name="action_print_customer_statement_pdf" 
-                                    string="Print PDF" 
-                                    type="object" 
+                            <button name="action_print_customer_statement_pdf"
+                                    string="Print PDF"
+                                    type="object"
                                     class="btn-primary"/>
-                            <button name="action_print_customer_statement_excel" 
-                                    string="Print Excel" 
-                                    type="object" 
+                            <button name="action_print_customer_statement_excel"
+                                    string="Print Excel"
+                                    type="object"
                                     class="btn-secondary"/>
-                            <button name="action_send_customer_statement_pdf" 
-                                    string="Send PDF By Email" 
-                                    type="object" 
+                            <button name="action_send_customer_statement_pdf"
+                                    string="Send PDF By Email"
+                                    type="object"
                                     class="btn-primary"/>
-                            <button name="action_send_customer_statement_excel" 
-                                    string="Send Excel By Email" 
-                                    type="object" 
+                            <button name="action_send_customer_statement_excel"
+                                    string="Send Excel By Email"
+                                    type="object"
                                     class="btn-secondary"/>
                         </group>
+
                         <group>
-                            <field name="invoice_ids" readonly="1" nolabel="1" context="{'default_partner_id': id}">
-                                <list>
-                                    <field name="invoice_date" string="Invoice Date"/>
-                                    <field name="name" string="Invoice No."/>
-                                    <field name="invoice_date_due" string="Due Date"/>
-                                    <field name="amount_total_signed" string="Total Amount"/>
-                                    <field name="amount_residual_signed" string="Amount Due"/>
-                                </list>
-                            </field>
+<field name="invoice_line_statement_ids"
+       readonly="1"
+       nolabel="1"
+       domain="[('display_type', '=', False), ('product_id', '!=', False)]">
+    <list string="Customer Statement">
+        <field name="statement_invoice_date" string="Invoice Date"/>
+        <field name="statement_invoice_name" string="Invoice No."/>
+
+        <field name="product_id" string="Product"/>
+        <field name="price_unit" string="Price"/>
+        <field name="quantity" string="Quantity"/>
+        <field name="price_subtotal" string="Line Subtotal"/>
+
+        <field name="statement_invoice_date_due" string="Due Date"/>
+        <field name="statement_amount_total_signed" string="Total Amount"/>
+        <field name="statement_amount_residual_signed" string="Amount Due"/>
+    </list>
+</field>
+
+
                         </group>
                     </page>
                 </xpath>
@@ -43,4 +55,3 @@
         </record>
     </data>
 </odoo>
-

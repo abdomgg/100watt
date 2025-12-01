@@ -1,6 +1,7 @@
+
 {
     'name': 'Customer Statement - 100 Watt',
-    'version': '1.0.0',
+    'version': '1.0.2',
     'category': 'Accounting',
     'summary': 'Add Customer Statement tab to partner form with print and email options',
     'description': """
@@ -19,6 +20,7 @@
     'author': 'Ahmed Tarek',
     'depends': ['base', 'account', 'contacts', 'mail'],
     'data': [
+        'security/ir.model.access.csv',
         'views/res_partner_views.xml',
         'report/customer_statement_report.xml',
     ],
@@ -27,4 +29,3 @@
     'auto_install': False,
     'license': 'LGPL-3',
 }
-
