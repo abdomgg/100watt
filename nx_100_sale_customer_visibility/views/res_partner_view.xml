@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_partner_form_add_team_leader" model="ir.ui.view">
+    <field name="name">res.partner.form.team.leader</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+
+      <!-- داخل Sales & Purchase -> Sales group: بعد user_id مباشرة -->
+      <xpath expr="//page[@name='sales_purchases']//group[@name='sale']/field[@name='user_id']" position="after">
+        <field name="team_leader_id"
+               string="Team Leader"
+               widget="many2one_avatar_user"
+               options="{'no_create': True}"
+               readonly="1"
+               domain="[('share','=',False)]"/>
+      </xpath>
+
+    </field>
+  </record>
+</odoo>

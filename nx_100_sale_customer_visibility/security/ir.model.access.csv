@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_users_salesman_read,res.users.salesman.read,base.model_res_users,sales_team.group_sale_salesman,1,0,0,0
+access_res_users_team_leader_read,res.users.team_leader.read,base.model_res_users,sales_team.group_sale_salesman_all_leads,1,0,0,0
+access_res_users_admin_full,res.users.admin.full,base.model_res_users,base.group_system,1,1,1,1
+access_res_users_read_all,res.users.read.all,base.model_res_users,,1,0,0,0
+access_res_partner_salesman,res.partner.salesman,base.model_res_partner,sales_team.group_sale_salesman,1,1,1,0
+access_res_partner_team_leader,res.partner.team_leader,base.model_res_partner,sales_team.group_sale_salesman_all_leads,1,1,1,0
+access_res_partner_admin_full,res.partner.admin.full,base.model_res_partner,base.group_system,1,1,1,1
+access_res_partner_user,res.partner.user,base.model_res_partner,base.group_user,1,1,1,0
