@@ -18,7 +18,7 @@ class ResPartner(models.Model):
                 context.get('create_user')):
                 continue
             
-            # Only apply validation for actual customers (with customer_rank > 0)
+            # Only apply name and phone validation for actual customers (with customer_rank > 0)
             # This automatically excludes users since users don't have customer_rank set
             if partner.customer_rank > 0:
                 if not partner.name:
