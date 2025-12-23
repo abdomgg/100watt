@@ -1,0 +1,26 @@
+/* Custom logo size for 100 Watt reports */
+/* Dimensions: 5.3cm x 1.8cm (width x height) = 52.2mm x 150px */
+
+/* Target company logo class used in Odoo 18 templates */
+.o_company_logo {
+    max-width: 5.3cm !important;
+    max-height: 1.8cm !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* For screen display */
+@media screen {
+    .o_company_logo {
+        max-width: 150px !important;
+        max-height: 52.2mm !important;
+    }
+}
+
+/* For print */
+@media print {
+    .o_company_logo {
+        max-width: 5.3cm !important;
+        max-height: 1.8cm !important;
+    }
+}

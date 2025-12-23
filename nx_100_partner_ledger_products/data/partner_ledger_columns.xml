@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="nx_partner_ledger_col_products" model="account.report.column">
+            <field name="name">Products</field>
+            <field name="report_id" ref="account_reports.partner_ledger_report"/>
+            <field name="expression_label">nx_product_names</field>
+            <field name="sortable" eval="False"/>
+            <field name="sequence">45</field>
+        </record>
+
+        <record id="nx_partner_ledger_col_price" model="account.report.column">
+            <field name="name">Price</field>
+            <field name="report_id" ref="account_reports.partner_ledger_report"/>
+            <field name="expression_label">nx_product_price</field>
+            <field name="sortable" eval="False"/>
+            <field name="sequence">46</field>
+        </record>
+
+        <record id="nx_partner_ledger_col_qty" model="account.report.column">
+            <field name="name">Quantity</field>
+            <field name="report_id" ref="account_reports.partner_ledger_report"/>
+            <field name="expression_label">nx_product_qty</field>
+            <field name="sortable" eval="False"/>
+            <field name="sequence">47</field>
+        </record>
+
+    </data>
+</odoo>

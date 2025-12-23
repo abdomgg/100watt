@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="product_template_form_add_product_code" model="ir.ui.view">
+            <field name="name">product.template.form.add.product.code</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//div[@class='oe_title']" position="inside">
+                    <label for="product_code_id"/>
+                    <h1>
+                        <field name="product_code_id"
+                               class="oe_inline"
+                               readonly="1"
+                               options="{'no_create': True, 'no_open': True}"/>
+                    </h1>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- Product Template Search View -->
+        <record id="product_template_search_view_inherit_code" model="ir.ui.view">
+            <field name="name">product.template.search.inherit.code</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="replace">
+                    <field name="name"
+                           string="Product"
+                           filter_domain="[
+                               '|','|','|','|',
+                               ('product_code_id.code', 'ilike', self),
+                               ('default_code', 'ilike', self),
+                               ('product_variant_ids.default_code', 'ilike', self),
+                               ('name', 'ilike', self),
+                               ('barcode', 'ilike', self)
+                           ]"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Product Variant Search View -->
+        <record id="product_product_search_view_inherit_code" model="ir.ui.view">
+            <field name="name">product.product.search.inherit.code</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="replace">
+                    <field name="name"
+                           string="Product"
+                           filter_domain="[
+                               '|','|','|',
+                               ('product_tmpl_id.product_code_id.code', 'ilike', self),
+                               ('default_code', 'ilike', self),
+                               ('name', 'ilike', self),
+                               ('barcode', 'ilike', self)
+                           ]"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>
