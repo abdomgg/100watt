@@ -1,0 +1,8 @@
+<!-- security/product_security.xml -->
+<odoo>
+    <!-- Define the group -->
+    <record id="group_product_creator" model="res.groups">
+        <field name="name">Product Creator</field>
+        <field name="category_id" ref="base.module_category_sales"/>
+    </record>
+</odoo>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit delivery slip report to add Arabic footer ONLY for receipts (incoming) -->
+    <template id="report_delivery_document_inherit_arabic_footer" inherit_id="stock.report_delivery_document">
+        <!-- Add Arabic footer at the end of page div, only for incoming transfers (receipts) -->
+        <xpath expr="//div[@class='page']" position="inside">
+            <!-- Arabic Footer Section - only for receipts (incoming) -->
+            <div t-if="o.picking_type_id.code == 'incoming'" class="o_arabic_footer" style="margin-top: 60px; padding-top: 30px; border-top: 2px solid #000; page-break-inside: avoid; clear: both;">
+                <div style="text-align: center; font-size: 14px; direction: rtl; font-family: Arial, sans-serif;">
+                    <p style="margin: 15px 0; font-weight: bold; line-height: 1.8;">
+                        <strong>استلمت انا الموقع أدناه الأصناف عالية بحالة جيدة وخالية من اى عيوب</strong>
+                    </p>
+                    <div style="margin-top: 50px; display: flex; justify-content: space-between; direction: ltr;">
+                        <div style="width: 45%;">
+                            <div style="border-top: 1px solid #000; padding-top: 8px; text-align: center; min-height: 50px;">
+                                <span style="font-size: 12px;">Signature / التوقيع</span>
+                            </div>
+                        </div>
+                        <div style="width: 45%;">
+                            <div style="border-top: 1px solid #000; padding-top: 8px; text-align: center; min-height: 50px;">
+                                <span style="font-size: 12px;">Date / التاريخ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Inherit picking operations report to add Arabic footer ONLY for receipts (incoming) -->
+    <template id="report_picking_inherit_arabic_footer" inherit_id="stock.report_picking">
+        <!-- Add Arabic footer at the end of page div, only for incoming transfers (receipts) -->
+        <xpath expr="//div[@class='page o_report_stockpicking_operations']" position="inside">
+            <!-- Arabic Footer Section - only for receipts (incoming) -->
+            <div t-if="o.picking_type_id.code == 'incoming'" class="o_arabic_footer" style="margin-top: 60px; padding-top: 30px; border-top: 2px solid #000; page-break-inside: avoid; clear: both;">
+                <div style="text-align: center; font-size: 14px; direction: rtl; font-family: Arial, sans-serif;">
+                    <p style="margin: 15px 0; font-weight: bold; line-height: 1.8;">
+                        <strong>استلمت انا الموقع أدناه الأصناف عالية بحالة جيدة وخالية من اى عيوب</strong>
+                    </p>
+                    <div style="margin-top: 50px; display: flex; justify-content: space-between; direction: ltr;">
+                        <div style="width: 45%;">
+                            <div style="border-top: 1px solid #000; padding-top: 8px; text-align: center; min-height: 50px;">
+                                <span style="font-size: 12px;">Signature / التوقيع</span>
+                            </div>
+                        </div>
+                        <div style="width: 45%;">
+                            <div style="border-top: 1px solid #000; padding-top: 8px; text-align: center; min-height: 50px;">
+                                <span style="font-size: 12px;">Date / التاريخ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Inherit return slip report to add Arabic footer -->
+    <template id="report_return_slip_inherit_arabic_footer" inherit_id="stock.report_return_slip">
+        <!-- Add Arabic footer at the end of page div -->
+        <xpath expr="//div[@class='page']" position="inside">
+            <!-- Arabic Footer Section -->
+            <div class="o_arabic_footer" style="margin-top: 60px; padding-top: 30px; border-top: 2px solid #000; page-break-inside: avoid; clear: both;">
+                <div style="text-align: center; font-size: 14px; direction: rtl; font-family: Arial, sans-serif;">
+                    <p style="margin: 15px 0; font-weight: bold; line-height: 1.8;">
+                        <strong>استلمت انا الموقع أدناه الأصناف عالية بحالة جيدة وخالية من اى عيوب</strong>
+                    </p>
+                    <div style="margin-top: 50px; display: flex; justify-content: space-between; direction: ltr;">
+                        <div style="width: 45%;">
+                            <div style="border-top: 1px solid #000; padding-top: 8px; text-align: center; min-height: 50px;">
+                                <span style="font-size: 12px;">Signature / التوقيع</span>
+                            </div>
+                        </div>
+                        <div style="width: 45%;">
+                            <div style="border-top: 1px solid #000; padding-top: 8px; text-align: center; min-height: 50px;">
+                                <span style="font-size: 12px;">Date / التاريخ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>
