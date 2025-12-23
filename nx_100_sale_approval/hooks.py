@@ -83,19 +83,16 @@ def _update_sale_approvers_translation(env):
     
     return updated
 
-def post_init_hook(cr, registry):
+def post_init_hook(env):
     """Update Arabic translations for view strings after module installation"""
-    from odoo import api, SUPERUSER_ID
-    
-    env = api.Environment(cr, SUPERUSER_ID, {})
     try:
         result = _update_sale_approvers_translation(env)
         if result:
-            cr.commit()
+            env.cr.commit()
     except Exception as e:
         # Log error but don't fail installation
         import logging
         _logger = logging.getLogger(__name__)
         _logger.warning("Failed to update Sales Approvers translation: %s", str(e))
-        cr.rollback()
+        env.cr.rollback()
 
